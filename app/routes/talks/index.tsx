@@ -16,8 +16,9 @@ const datetimeLocalSchema = z.string().refine((data) => {
 
 const schema = z.object({
   title: z.string().min(1),
-  speaker: z.string().min(1),
-  description: z.string().min(1),
+  speaker: z.string(),
+  description: z.string(),
+  place: z.string().min(1),
   start_at: z.string().min(1) && datetimeLocalSchema,
   finish_at: z.string().min(1) && datetimeLocalSchema,
   url: z.string(),
@@ -40,6 +41,7 @@ export default createRoute(async (c) => {
       <td>{result['title']}</td>
       <td>{result['speaker']}</td>
       <td>{result['description']}</td>
+      <td>{result['place']}</td>
       <td>{result['start_at']}</td>
       <td>{result['finish_at']}</td>
       <td>{result['url']}</td>
@@ -52,9 +54,10 @@ export default createRoute(async (c) => {
         <thead>
           <tr>
             <th style="width: 10%;">ID</th>
-            <th style="width: 25%;">タイトル</th>
+            <th style="width: 20%;">タイトル</th>
             <th style="width: 10%;">スピーカー</th>
-            <th style="width: 25%;">説明</th>
+            <th style="width: 20%;">説明</th>
+            <th style="width: 10%;">会場</th>
             <th style="width: 10%;">開始時間</th>
             <th style="width: 10%;">終了時間</th>
             <th style="width: 10%;">URL</th>
@@ -69,10 +72,10 @@ export default createRoute(async (c) => {
 })
 
 export const POST = createRoute(zValidator('form', schema), async (c) => {
-  const { title, speaker, description, start_at, finish_at, url } = c.req.valid('form')
-  console.log(title, speaker, description, start_at, finish_at, url)
-  const { results } = await c.env.DB.prepare("INSERT INTO talks (title, speaker, description, start_at, finish_at, url) VALUES (?, ?, ?, ?, ?, ?) RETURNING *")
-    .bind(title, speaker, description, start_at, finish_at, url)
+  const { title, speaker, description, place, start_at, finish_at, url } = c.req.valid('form')
+  console.log(title, speaker, description, place, start_at, finish_at, url)
+  const { results } = await c.env.DB.prepare("INSERT INTO talks (title, speaker, description, place, start_at, finish_at, url) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING *")
+    .bind(title, speaker, description, place, start_at, finish_at, url)
     .run()
   const record = results.length ? results[0] : null
   if (record) {

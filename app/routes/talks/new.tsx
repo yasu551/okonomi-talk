@@ -45,6 +45,10 @@ export default createRoute((c) => {
           <textarea name="description" id="description" rows="5" class={inputClass}></textarea>
         </div>
         <div class={formGroupClass}>
+          <label for="place" class={labelClass}>会場</label>
+          <input type="text" name="place" id="place" class={inputClass}></input>
+        </div>        
+        <div class={formGroupClass}>
           <label for="start_at" class={labelClass}>開始時間</label>
           <input type="datetime-local" name="start_at" id="start_at" class={inputClass}></input>
         </div>
