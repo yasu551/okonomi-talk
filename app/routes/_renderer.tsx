@@ -29,6 +29,7 @@ export default jsxRenderer(({ children }) => {
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>okonomi talk</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
         <Script src="/app/client.ts" />
         <Style />
       </head>

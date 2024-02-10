@@ -1,10 +1,19 @@
 import { css } from 'hono/css'
 import { createRoute } from 'honox/factory'
-import Counter from '../islands/counter'
-import { Card, Talk } from '../islands/card'
+import Card from '../islands/card'
 
 interface Env {
   DB: D1Database;
+}
+
+type Talk = {
+  title: string
+  speaker: string
+  description: string
+  place: string
+  start_at: string
+  finish_at: string
+  url: string
 }
 
 export default createRoute(async (c) => {
@@ -13,7 +22,7 @@ export default createRoute(async (c) => {
     flex-direction: column;
     gap: 8px;
   `
-  const { results } = await c.env.DB.prepare("SELECT * FROM talks").all()
+  const { results } = await c.env.DB.prepare("SELECT * FROM talks ORDER BY start_at").all()
   const items = results.map(result => {
     const talk: Talk = { title: result['title'] as string,
                          speaker: result['speaker'] as string,
@@ -26,9 +35,11 @@ export default createRoute(async (c) => {
     return <Card {...talk} />
   })
   return c.render(
-    <div class={cardListClass}>
-      {items}
-    </div>
+    <>
+      <div class={cardListClass}>
+        {items}
+      </div>
+    </>
   )
 })
 

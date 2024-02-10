@@ -1,6 +1,7 @@
-import { css } from "hono/css"
+import { css, cx } from "hono/css"
+import { useState } from 'hono/jsx'
 
-export type Talk = {
+type Talk = {
   title: string
   speaker: string
   description: string
@@ -10,21 +11,38 @@ export type Talk = {
   url: string
 }
 
-export function Card(talk: Talk) {
+export default function Card(talk: Talk) {
   const cardClass = css`
     border: 1px solid #C32121;
     border-radius: 8px;
     padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
   `
   const cardHeaderClass = css`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
     a {
       font-weight: bold;
       color: #C32121;
       text-decoration: none;
     }
+  `
+  const bookmarkClass = css`
+    background-color: transparent;
+    border: none;
+    border-radius: 16px;
+    padding-top: 4px;
+
+    :hover {
+      opacity: 0.5;
+    }
+  `
+  const checkedClass = css`
+    background-color: yellow;
   `
   const cardBodyClass = css`
     display: flex;
@@ -35,22 +53,25 @@ export function Card(talk: Talk) {
     display: flex;
     gap: 16px;
   `
-  const termClass = css`
-    
-  `
+  const [checked, setChecked] = useState(false)
   return (
     <div class={cardClass}>
       <div class={cardHeaderClass}>
         <a href={talk['url'] ? talk['url'] : '#'}>
           {talk['title']}
-        </a>      
+        </a>
+        <button onClick={() => setChecked(!checked)} class={cx(bookmarkClass, checked ? checkedClass : '')}>
+          <span class="material-symbols-outlined">
+            bookmark
+          </span>
+        </button>
       </div>
       <div class={cardBodyClass}>
         <div class={whoWhereClass}>
           <span>スピーカー: {talk['speaker']}</span>
           <span>場所: {talk['place']}</span>
         </div>
-        <div class={termClass}>
+        <div>
           時間帯: {formatDateTime(talk['start_at'])} 〜 {formatDateTime(talk['finish_at'])}
         </div>
       </div>    
@@ -67,5 +88,5 @@ function formatDateTime(dateTimeIso: string): string {
   const hours = date.getHours().toString().padStart(2, '0'); // ゼロ埋め
   const minutes = date.getMinutes().toString().padStart(2, '0'); // ゼロ埋め
 
-  return `${year}-${month}-${day} ${hours}:${minutes}`;
+  return `${year}/${month}/${day} ${hours}:${minutes}`;
 }
