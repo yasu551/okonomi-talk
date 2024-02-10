@@ -2,9 +2,10 @@ import { createRoute } from 'honox/factory'
 import { z } from 'zod'
 import { zValidator } from '@hono/zod-validator'
 import { css } from 'hono/css';
+import { basicAuth } from 'hono/basic-auth'
 
 interface Env {
-  DB: D1Database;
+  DB: D1Database
 }
 
 const datetimeLocalSchema = z.string().refine((data) => {
@@ -71,7 +72,7 @@ export default createRoute(async (c) => {
   )
 })
 
-export const POST = createRoute(zValidator('form', schema), async (c) => {
+export const POST = createRoute(basicAuth({username: 'hono', password: 'acoolproject'}), zValidator('form', schema), async (c) => {
   const { title, speaker, description, place, start_at, finish_at, url } = c.req.valid('form')
   console.log(title, speaker, description, place, start_at, finish_at, url)
   const { results } = await c.env.DB.prepare("INSERT INTO talks (title, speaker, description, place, start_at, finish_at, url) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING *")
